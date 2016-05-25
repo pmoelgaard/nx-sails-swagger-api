@@ -2,24 +2,35 @@ var _ = require('lodash');
 var request = require('request');
 var ensureHttp = require('ensure-http');
 
-module.exports = function(sails, swagger) {
+module.exports = function (sails, swagger) {
 
-  _.each(_.keys(swagger.paths), function(path) {
+  _.each(_.keys(swagger.paths), function (path) {
 
     var pathDef = swagger.paths[path];
 
-    _.each(_.keys(pathDef), function(vertex) {
+    _.each(_.keys(pathDef), function (vertex) {
 
       var vertexDef = pathDef[vertex];
 
-      var route = vertex.toUpperCase() +' '+ ( swagger.basePath || '' ) +''+ path;
+      var route = vertex.toUpperCase() + ' ' + ( swagger.basePath || '' ) + '' + path;
 
-      sails.router.bind(route, function(req, res, next) {
+      route = route.replace(/{/g, ':').replace(/}/g, '');
 
-        var targetUrl = ensureHttp(swagger.host + ( swagger.basePath || '' ) + path);
+      console.log('Binding...' + route);
 
-        var req = { url: targetUrl, method: vertex, body: ( req.body || null ), json: true };
-        request(req, function(err, message, body) {
+      sails.router.bind(route, function (req, res, next) {
+
+        var targetUrlTemplate = ensureHttp(swagger.host + ( swagger.basePath || '' ) + path);
+        var templateFn = _.template(targetUrlTemplate, {
+          interpolate: /{([\s\S]+?)}/g
+        });
+
+        var params = req.allParams();
+
+        var targetUrl = templateFn(params);
+
+        var reqOut = {url: targetUrl, method: vertex, body: ( req.body || null ), json: true};
+        request(reqOut, function (err, message, body) {
 
           res.ok(body);
         })
