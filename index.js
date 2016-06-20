@@ -38,7 +38,7 @@ module.exports = function (sails, swagger) {
                             .send(body);
                     }
                     else {
-                        res.error(err);
+                        res.serverError(err);
                     }
                 })
             })
