@@ -11,5 +11,8 @@
   "dependencies": {
     "request": "*",
     "lodash": "*"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }
