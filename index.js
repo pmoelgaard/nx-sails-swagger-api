@@ -1,6 +1,5 @@
 var _ = require('lodash');
 var request = require('request');
-var ensureHttp = require('ensure-http');
 
 module.exports = function (sails, swagger) {
 
@@ -20,7 +19,8 @@ module.exports = function (sails, swagger) {
 
             sails.router.bind(route, function (req, res, next) {
 
-                var targetUrlTemplate = ensureHttp(swagger.host + ( swagger.basePath || '' ) + path);
+                var protocol = _.startsWith(swagger.host, 'http') ? '' : 'http://';
+                var targetUrlTemplate = protocol + swagger.host + ( swagger.basePath || '' ) + path;
                 var templateFn = _.template(targetUrlTemplate, {
                     interpolate: /{([\s\S]+?)}/g
                 });
