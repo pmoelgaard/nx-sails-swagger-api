@@ -29,7 +29,14 @@ module.exports = function (sails, swagger) {
 
                 var targetUrl = templateFn(params);
 
-                var reqOut = {url: targetUrl, method: vertex, body: ( req.body || null ), json: true};
+                var reqOut = {
+                    url: targetUrl,
+                    method: vertex,
+                    body: ( req.body || null ),
+                    qs: req.query,
+                    json: true
+                };
+                
                 request(reqOut, function (err, message, body) {
 
                     if (!err) {
