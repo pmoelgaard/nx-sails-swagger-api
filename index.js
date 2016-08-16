@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var uuid = require('uuid');
 var request = require('request');
 
 module.exports = function (sails, swagger) {
@@ -40,8 +41,13 @@ module.exports = function (sails, swagger) {
                 request(reqOut, function (err, message, body) {
 
                     if (params && body && !params.id && !_.isArray(body)) {
-                        body.id = body.id || 'uid';
+                        body.id = body.id || uuid.v4();
                         body = [body];
+                    }
+                    else if (_.isArray(body)) {
+                        _.each(body, function (item) {
+                            item.id = item.id || uuid.v4();
+                        });
                     }
 
                     if (!err) {

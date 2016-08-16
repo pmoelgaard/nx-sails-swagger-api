@@ -9,8 +9,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "lodash": "*",
     "request": "*",
-    "lodash": "*"
+    "uuid": "^2.0.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
