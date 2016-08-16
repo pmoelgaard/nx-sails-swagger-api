@@ -33,11 +33,16 @@ module.exports = function (sails, swagger) {
                     url: targetUrl,
                     method: vertex,
                     body: ( req.body || null ),
-                    qs: req.query,
+                    qs: req.transport != 'socket.io' ? req.query : req.body,
                     json: true
                 };
-                
+
                 request(reqOut, function (err, message, body) {
+
+                    if (params && body && !params.id && !_.isArray(body)) {
+                        body.id = body.id || 'uid';
+                        body = [body];
+                    }
 
                     if (!err) {
                         res
@@ -51,4 +56,4 @@ module.exports = function (sails, swagger) {
             })
         })
     })
-}
+};
