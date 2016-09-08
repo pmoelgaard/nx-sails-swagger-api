@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "lodash": "*",
-    "request": "*",
+    "request": "^2.74.0",
     "uuid": "^2.0.2"
   },
   "publishConfig": {

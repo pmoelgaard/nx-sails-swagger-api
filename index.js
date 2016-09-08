@@ -35,7 +35,8 @@ module.exports = function (sails, swagger) {
                     method: vertex,
                     body: ( req.body || null ),
                     qs: req.transport != 'socket.io' ? req.query : req.body,
-                    json: true
+                    json: true,
+                    headers: req.headers
                 };
 
                 request(reqOut, function (err, message, body) {
