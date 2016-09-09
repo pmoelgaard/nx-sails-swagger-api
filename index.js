@@ -2,7 +2,15 @@ var _ = require('lodash');
 var uuid = require('uuid');
 var request = require('request');
 
+
+var NAME = 'nx-sails-swagger-api';
+
 module.exports = function (sails, swagger) {
+
+    if(!swagger) {
+        console.error('[API NOT LOADED] A reference to a Swagger document is required parameter to '+ NAME);
+        return;
+    }
 
     _.each(_.keys(swagger.paths), function (path) {
 
