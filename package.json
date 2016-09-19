@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "lodash": "*",
+    "lodash": "^4.15.0",
     "request": "^2.74.0",
     "uuid": "^2.0.2"
   },
