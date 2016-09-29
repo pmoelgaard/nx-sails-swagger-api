@@ -38,16 +38,31 @@ module.exports = function (sails, swagger) {
 
                 var targetUrl = templateFn(params);
 
+                var headers = req.headers;
+
+                _.unset(headers, 'cookie');
+                _.unset(headers, 'host');
+                _.unset(headers, 'user-agent');
+                _.unset(headers, 'referer');
+
                 var reqOut = {
                     url: targetUrl,
                     method: vertex,
                     body: ( req.body || null ),
                     qs: req.transport != 'socket.io' ? req.query : req.body,
-                    json: true,
-                    headers: req.headers
+                    json: true
+                    ,
+                    headers: headers
                 };
 
                 request(reqOut, function (err, message, body) {
+
+                    console.log('*************************');
+                    console.log(''+ vertex +' '+ targetUrl);
+                    console.log('-------------------------');
+                    console.dir(headers);
+                    console.log('=========================');
+                    console.dir(body);
 
                     if (params && body && !params.id && !_.isArray(body)) {
                         body.id = body.id || uuid.v4();
