@@ -1,6 +1,6 @@
 {
   "name": "nx-sails-swagger-api",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Creates a Sails API from a remote Swagger file",
   "main": "index.js",
   "author": {
