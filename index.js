@@ -8,8 +8,7 @@ var NAME = 'nx-sails-swagger-api';
 module.exports = function (sails, swagger) {
 
     if(!swagger) {
-        console.error('[API NOT LOADED] A reference to a Swagger document is required parameter to '+ NAME);
-        return;
+        throw new Error('[API NOT LOADED] A reference to a Swagger document is required parameter to '+ NAME);
     }
 
     _.each(_.keys(swagger.paths), function (path) {
