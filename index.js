@@ -10,6 +10,9 @@ module.exports = function (sails, swagger) {
     if(!swagger) {
         throw new Error('[API NOT LOADED] A reference to a Swagger document is required parameter to '+ NAME);
     }
+    else if(_.isString(swagger)) {
+        throw new Error('[API NOT LOADED] '+ NAME +' : '+ swagger);
+    }
 
     _.each(_.keys(swagger.paths), function (path) {
 
