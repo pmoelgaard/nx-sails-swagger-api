@@ -57,7 +57,8 @@ module.exports = function (sails, swagger) {
                     headers: headers
                 };
 
-                request(reqOut, function (err, message, body) {
+                var $request = sails.$request || request;
+                $request(reqOut, function (err, message, body) {
 
                     console.log('*************************');
                     console.log(''+ vertex +' '+ targetUrl);
