@@ -1,72 +1,50 @@
-var _ = require('lodash');
 var uuid = require('uuid');
 var request = require('request');
-
-
+var _ = require('lodash');
 var NAME = 'nx-sails-swagger-api';
-
 module.exports = function (sails, swagger) {
-
-    if(!swagger) {
-        throw new Error('[API NOT LOADED] A reference to a Swagger document is required parameter to '+ NAME);
+    if (!swagger) {
+        throw new Error('[API NOT LOADED] A reference to a Swagger document is required parameter to ' + NAME);
     }
-    else if(_.isString(swagger)) {
-        throw new Error('[API NOT LOADED] '+ NAME +' : '+ swagger);
+    else if (_.isString(swagger)) {
+        throw new Error('[API NOT LOADED] ' + NAME + ' : ' + swagger);
     }
-
     _.each(_.keys(swagger.paths), function (path) {
-
         var pathDef = swagger.paths[path];
-
         _.each(_.keys(pathDef), function (vertex) {
-
             var vertexDef = pathDef[vertex];
-
-            var route = vertex.toUpperCase() + ' ' + ( swagger.basePath || '' ) + '' + path;
-
+            var route = vertex.toUpperCase() + ' ' + (swagger.basePath || '') + '' + path;
             route = route.replace(/{/g, ':').replace(/}/g, '');
-
             console.log('Binding...' + route);
-
             sails.router.bind(route, function (req, res, next) {
-
                 var protocol = _.startsWith(swagger.host, 'http') ? '' : 'http://';
-                var targetUrlTemplate = protocol + swagger.host + ( swagger.basePath || '' ) + path;
+                var targetUrlTemplate = protocol + swagger.host + (swagger.basePath || '') + path;
                 var templateFn = _.template(targetUrlTemplate, {
                     interpolate: /{([\s\S]+?)}/g
                 });
-
                 var params = req.allParams();
-
                 var targetUrl = templateFn(params);
-
                 var headers = req.headers;
-
                 _.unset(headers, 'cookie');
                 _.unset(headers, 'host');
                 _.unset(headers, 'user-agent');
                 _.unset(headers, 'referer');
-
                 var reqOut = {
                     url: targetUrl,
                     method: vertex,
-                    body: ( req.body || null ),
+                    body: (req.body || null),
                     qs: req.transport != 'socket.io' ? req.query : req.body,
-                    json: true
-                    ,
+                    json: true,
                     headers: headers
                 };
-
-                var $request = sails.$request || request;
+                var $request = sails.$request(req.session) || request;
                 $request(reqOut, function (err, message, body) {
-
                     console.log('*************************');
-                    console.log(''+ vertex +' '+ targetUrl);
+                    console.log('' + vertex + ' ' + targetUrl);
                     console.log('-------------------------');
                     console.dir(headers);
                     console.log('=========================');
                     console.dir(body);
-
                     if (params && body && !params.id && !_.isArray(body)) {
                         body.id = body.id || uuid.v4();
                         body = [body];
@@ -76,7 +54,6 @@ module.exports = function (sails, swagger) {
                             item.id = item.id || uuid.v4();
                         });
                     }
-
                     if (!err) {
                         res
                             .status(message.statusCode)
@@ -85,8 +62,9 @@ module.exports = function (sails, swagger) {
                     else {
                         res.serverError(err);
                     }
-                })
-            })
-        })
-    })
+                });
+            });
+        });
+    });
 };
+//# sourceMappingURL=index.js.map
